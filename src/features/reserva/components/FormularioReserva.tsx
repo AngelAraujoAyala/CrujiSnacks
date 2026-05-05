@@ -1,9 +1,14 @@
 import { useState } from 'react';
 import type { Reserva } from '../../../interfaces/reserva';
 import PasoContacto from './PasoContacto';
+import { Button } from '../../../components/ui/Buttons';
+import { Alert } from '../../../components/ui/Alert';
+
+type ErroresReserva = Partial<Record<keyof Reserva, string>>;
 
 export const FormularioReserva = () => {
   const [paso, setPaso] = useState(1);
+  const [errores, setErrores] = useState<ErroresReserva>({});
   const [datos, setDatos] = useState<Reserva>({
     nombreCliente: '',
     whatsapp: '',
@@ -14,6 +19,26 @@ export const FormularioReserva = () => {
     toppings: [],
     estado: 'pendiente'
   });
+
+  const validarPasoActual = () => {
+    const nuevosErrores: ErroresReserva = {};
+
+    if (paso === 1) {
+      if (!datos.nombreCliente.trim()) nuevosErrores.nombreCliente = "El nombre es obligatorio";
+      if (!datos.whatsapp.trim()) nuevosErrores.whatsapp = "El WhatsApp es necesario";
+      if (datos.whatsapp.length < 10) nuevosErrores.whatsapp = "Mínimo 10 dígitos";
+      if (!datos.ubicacion.trim()) nuevosErrores.ubicacion = "Dinos dónde será el evento";
+    }
+
+    setErrores(nuevosErrores);
+    return Object.keys(nuevosErrores).length === 0;
+  }
+
+  const manejarSiguiente = () => {
+    if (validarPasoActual()) {
+      setPaso(paso + 1);
+    }
+  };
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-orange-100">
@@ -35,15 +60,22 @@ export const FormularioReserva = () => {
         </div>
 
         {/* Renderizado Condicional de Pasos */}
-        {paso === 1 && <PasoContacto datos={datos} setDatos={setDatos} />}
+        {paso === 1 && <PasoContacto datos={datos} setDatos={setDatos} errores={errores} />}
+
+        {errores.nombreCliente && (
+          <Alert mensaje="¡Ups! El nombre es obligatorio." tipo="error" />
+        )}
+        {errores.whatsapp && (
+          <Alert mensaje="¡Ups! El número debe tener exactamente 10 dígitos." tipo="error" />
+        )}
+        {errores.ubicacion && (
+          <Alert mensaje="¡Ups! La ubicación es obligatoria." tipo="error" />
+        )}
 
         {/* Botón de Navegación */}
-        <button
-          onClick={() => setPaso(paso + 1)}
-          className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl transition-all shadow-lg active:scale-95"
-        >
+        <Button onClick={manejarSiguiente} variant="primary">
           {paso === 3 ? '¡Apartar mi fecha ya!' : 'Siguiente'}
-        </button>
+        </Button>
       </div>
     </div>
   );
