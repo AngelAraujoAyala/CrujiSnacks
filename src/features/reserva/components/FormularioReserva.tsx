@@ -83,11 +83,16 @@ _Enviado desde el formulario web_`;
   }
 
   const manejarSiguiente = () => {
-    if (paso === 4) return; // Ya estamos en confirmación
+    if (paso === 4) return;
     if (validarPasoActual()) {
       setPaso(paso + 1);
     }
   };
+
+  const manejarAtras = () => {
+    if (paso === 1) return;
+    setPaso(paso - 1);
+  }
 
   const updateToppings = (nuevosToppings: string[]) => {
     setDatos(prev => ({ ...prev, toppings: nuevosToppings }));
@@ -129,13 +134,22 @@ _Enviado desde el formulario web_`;
           {errores.hora && <Alert mensaje="¡Ups! Ingresa hora válida." tipo="error" />}
           {errores.toppings && <Alert mensaje={errores.toppings} tipo="error" />}
         </div>
-
-        {/* Solo mostramos el botón Siguiente si no estamos en el paso de Confirmación */}
-        {paso < 4 && (
-          <Button onClick={manejarSiguiente} variant="primary">
-            {paso === 3 ? '¡Apartar mi fecha ya!' : 'Siguiente'}
-          </Button>
-        )}
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div className='flex justify-start'>
+            {paso > 1 && (
+              <Button variant="secondary" onClick={manejarAtras}>
+                Atrás
+              </Button>
+            )}
+          </div>
+          <div>
+            {paso < 4 && (
+              <Button onClick={manejarSiguiente} variant="primary">
+                {paso === 3 ? '¡Apartar mi fecha ya!' : 'Siguiente'}
+              </Button>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
