@@ -4,6 +4,8 @@ import PasoContacto from './PasoContacto';
 import { Button } from '../../../components/ui/Buttons';
 import { Alert } from '../../../components/ui/Alert';
 import PasoDatosEvento from './PasoDatosEvento';
+import PasoToppings from './PasoToppings';
+
 
 type ErroresReserva = Partial<Record<keyof Reserva, string>>;
 
@@ -41,6 +43,10 @@ export const FormularioReserva = () => {
       }
     }
 
+    if (paso === 3) {
+      if (datos.toppings.length < 10) nuevosErrores.toppings = "Selecciona 10 toppings";
+    }
+
     setErrores(nuevosErrores);
     return Object.keys(nuevosErrores).length === 0;
   }
@@ -48,6 +54,17 @@ export const FormularioReserva = () => {
   const manejarSiguiente = () => {
     if (validarPasoActual()) {
       setPaso(paso + 1);
+    }
+  };
+
+  const updateToppings = (nuevosToppings: string[]) => {
+    setDatos(prev => ({ ...prev, toppings: nuevosToppings }));
+
+    if (nuevosToppings.length === 10) {
+      setErrores(prevErrors => {
+        const { toppings, ...rest } = prevErrors;
+        return rest;
+      });
     }
   };
 
@@ -73,6 +90,7 @@ export const FormularioReserva = () => {
         {/* Renderizado Condicional de Pasos */}
         {paso === 1 && <PasoContacto datos={datos} setDatos={setDatos} errores={errores} />}
         {paso === 2 && <PasoDatosEvento datos={datos} setDatos={setDatos} errores={errores} />}
+        {paso === 3 && (<PasoToppings selectedToppings={datos.toppings} onChange={updateToppings} />)}
 
         {/* Mostrar errores */}
         {errores.nombreCliente && (
@@ -89,6 +107,9 @@ export const FormularioReserva = () => {
         )}
         {errores.hora && (
           <Alert mensaje="¡Ups! Ingresa hora válida." tipo="error" />
+        )}
+        {errores.toppings && (
+          <Alert mensaje={errores.toppings} tipo="error" />
         )}
 
         {/* Botón de Navegación */}
