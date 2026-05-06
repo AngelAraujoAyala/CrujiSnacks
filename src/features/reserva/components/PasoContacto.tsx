@@ -1,13 +1,6 @@
-import type { Reserva } from "../../../interfaces/reserva";
+import type { PasosReservaProps } from "../../../interfaces/pasosReservaProps";
 
-
-interface PasoContactoProps {
-  datos: Reserva;
-  setDatos: React.Dispatch<React.SetStateAction<Reserva>>;
-  errores: Partial<Record<keyof Reserva, string>>;
-}
-
-const PasoContacto = ({ datos, setDatos, errores }: PasoContactoProps) => {
+const PasoContacto = ({ datos, setDatos, errores }: PasosReservaProps) => {
 
 
   return (

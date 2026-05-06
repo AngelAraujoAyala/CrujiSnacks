@@ -6,7 +6,7 @@ export interface Reserva {
     fecha: string,
     hora: string,
     ubicacion: string,
-    paquete: '30 vasitos' | '50 vasitos' | '80 vasitos' | '100 vasitos' | '150 vasitos' | '200 vasitos',
+    paquete: string,
     toppings: string[],
     estado: 'pendiente' | 'confirmado',
 }

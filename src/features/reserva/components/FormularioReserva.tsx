@@ -3,6 +3,7 @@ import type { Reserva } from '../../../interfaces/reserva';
 import PasoContacto from './PasoContacto';
 import { Button } from '../../../components/ui/Buttons';
 import { Alert } from '../../../components/ui/Alert';
+import PasoDatosEvento from './PasoDatosEvento';
 
 type ErroresReserva = Partial<Record<keyof Reserva, string>>;
 
@@ -28,6 +29,16 @@ export const FormularioReserva = () => {
       if (!datos.whatsapp.trim()) nuevosErrores.whatsapp = "El WhatsApp es necesario";
       if (datos.whatsapp.length < 10) nuevosErrores.whatsapp = "Mínimo 10 dígitos";
       if (!datos.ubicacion.trim()) nuevosErrores.ubicacion = "Dinos dónde será el evento";
+    }
+
+    if (paso === 2) {
+      if (!datos.fecha) nuevosErrores.fecha = "Selecciona una fecha";
+      if (!datos.hora) nuevosErrores.hora = "Selecciona una hora";
+
+      const hoy = new Date().toISOString().split('T')[0];
+      if (datos.fecha && datos.fecha < hoy) {
+        nuevosErrores.fecha = "No puedes reservar en el pasado";
+      }
     }
 
     setErrores(nuevosErrores);
@@ -61,7 +72,9 @@ export const FormularioReserva = () => {
 
         {/* Renderizado Condicional de Pasos */}
         {paso === 1 && <PasoContacto datos={datos} setDatos={setDatos} errores={errores} />}
+        {paso === 2 && <PasoDatosEvento datos={datos} setDatos={setDatos} errores={errores} />}
 
+        {/* Mostrar errores */}
         {errores.nombreCliente && (
           <Alert mensaje="¡Ups! El nombre es obligatorio." tipo="error" />
         )}
@@ -70,6 +83,12 @@ export const FormularioReserva = () => {
         )}
         {errores.ubicacion && (
           <Alert mensaje="¡Ups! La ubicación es obligatoria." tipo="error" />
+        )}
+        {errores.fecha && (
+          <Alert mensaje="¡Ups! Ingresa fecha válida." tipo="error" />
+        )}
+        {errores.hora && (
+          <Alert mensaje="¡Ups! Ingresa hora válida." tipo="error" />
         )}
 
         {/* Botón de Navegación */}
