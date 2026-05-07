@@ -9,6 +9,4 @@ export interface Reserva {
     paquete: string,
     toppings: string[],
     estado: 'pendiente' | 'confirmado',
-}
-
-
+};
