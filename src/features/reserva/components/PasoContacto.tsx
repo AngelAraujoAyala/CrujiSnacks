@@ -39,7 +39,7 @@ const PasoContacto = ({ datos, setDatos, errores }: PasosReservaProps) => {
       </div>
 
       <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">Email</label>
         <input
           type="text"
           placeholder="tu_email@gmail.com"

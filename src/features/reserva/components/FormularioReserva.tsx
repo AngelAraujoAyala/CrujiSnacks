@@ -6,6 +6,7 @@ import { Alert } from '../../../components/ui/Alert';
 import PasoDatosEvento from './PasoDatosEvento';
 import PasoToppings from './PasoToppings';
 import ConfirmarReserva from './ConfirmarReserva';
+import { getToppingLabel } from './ConfirmarReserva';
 
 type ErroresReserva = Partial<Record<keyof Reserva, string>>;
 
@@ -38,6 +39,15 @@ export const FormularioReserva = () => {
     localStorage.setItem('progreso_crujisnacks', JSON.stringify(datos));
   }, [datos]);
 
+  // Este efecto se dispara cada vez que el valor de 'paso' cambia
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth' // 'smooth' para desplazamiento animado, 'auto' para instantáneo
+    });
+  }, [paso]);
+
+
   const handleFinalConfirm = () => {
     const { nombreCliente, whatsapp, fecha, hora, ubicacion, paquete, toppings } = datos;
 
@@ -48,7 +58,7 @@ export const FormularioReserva = () => {
 *Hora:* ${hora}%0A
 *Ubicación:* ${ubicacion}%0A
 *Paquete:* ${paquete}%0A
-*Toppings (10):* ${toppings.join(', ')}%0A
+*Toppings (10):* ${toppings.map(getToppingLabel).join(', ')}%0A
 --------------------------%0A
 _Enviado desde el formulario web_`;
 
@@ -63,9 +73,16 @@ _Enviado desde el formulario web_`;
     const nuevosErrores: ErroresReserva = {};
     if (paso === 1) {
       if (!datos.nombreCliente.trim()) nuevosErrores.nombreCliente = "El nombre es obligatorio";
-      if (!datos.whatsapp.trim()) nuevosErrores.whatsapp = "El WhatsApp es necesario";
-      if (datos.whatsapp.length < 10) nuevosErrores.whatsapp = "Mínimo 10 dígitos";
+      if (datos.whatsapp.trim().replace(/\D/g, '').length !== 10) nuevosErrores.whatsapp = "Minimo 10 dígitos";
       if (!datos.ubicacion.trim()) nuevosErrores.ubicacion = "Dinos dónde será el evento";
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (!datos.email) {
+        nuevosErrores.email = "El correo es obligatorio";
+      } else if (!emailRegex.test(datos.email)) {
+        nuevosErrores.email = "Formato de correo inválido";
+      }
+
     }
     if (paso === 2) {
       if (!datos.fecha) nuevosErrores.fecha = "Selecciona una fecha";
@@ -130,14 +147,15 @@ _Enviado desde el formulario web_`;
           {errores.nombreCliente && <Alert mensaje="¡Ups! El nombre es obligatorio." tipo="error" />}
           {errores.whatsapp && <Alert mensaje="¡Ups! El número debe tener exactamente 10 dígitos." tipo="error" />}
           {errores.ubicacion && <Alert mensaje="¡Ups! La ubicación es obligatoria." tipo="error" />}
+          {errores.email && <Alert mensaje={errores.email} tipo="error" />}
           {errores.fecha && <Alert mensaje="¡Ups! Ingresa fecha válida." tipo="error" />}
           {errores.hora && <Alert mensaje="¡Ups! Ingresa hora válida." tipo="error" />}
           {errores.toppings && <Alert mensaje={errores.toppings} tipo="error" />}
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div className='flex justify-between'>
           <div className='flex justify-start'>
-            {paso > 1 && (
-              <Button variant="secondary" onClick={manejarAtras}>
+            {paso > 1 && paso < 4 && (
+              <Button variant="atras" onClick={manejarAtras}>
                 Atrás
               </Button>
             )}

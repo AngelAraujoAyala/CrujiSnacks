@@ -6,23 +6,27 @@ interface Props {
     onChange: (toppings: string[]) => void;
 }
 
-const TOPPINGS_DISPONIBLES = [
-    { id: 'chips', label: 'Chips de Fuego', icon: '🔥' },
-    { id: 'gomitas', label: 'Gomitas Enchiladas', icon: '🍬' },
-    { id: 'salsas', label: 'Mix de Salsas', icon: '🌶️' },
-    { id: 'cacahuates', label: 'Cacahuates Japoneses', icon: '🥜' },
-    { id: 'fruta', label: 'Fruta Picada', icon: '🥭' },
-    { id: '1', label: 'Personalizado', icon: '👑' },
-    { id: '2', label: 'Personalizado', icon: '👑' },
-    { id: '3', label: 'Personalizado', icon: '👑' },
-    { id: '4', label: 'Personalizado', icon: '👑' },
-    { id: '5', label: 'Personalizado', icon: '👑' },
-    { id: '6', label: 'Personalizado', icon: '👑' },
-    { id: '7', label: 'Personalizado', icon: '👑' },
-    { id: '8', label: 'Personalizado', icon: '👑' },
-    { id: '9', label: 'Personalizado', icon: '👑' },
-    { id: '10', label: 'Personalizado', icon: '👑' },
-    { id: '11', label: 'Personalizado', icon: '👑' },
+export const TOPPINGS_DISPONIBLES = [
+    { id: 'ruffles', label: 'Ruffles', icon: '/toppings/ruffles_icon.png', disponible: true },
+    { id: 'tostitosFlamingHot', label: 'Tostitos Flaming Hot', icon: '/toppings/tostitos_flaming_hot_icon.png', disponible: true },
+    { id: 'tostitosSalsaVerde', label: 'Tostitos Salsa Verde', icon: '/toppings/tostitos_icon.png' },
+    { id: 'takisFuego', label: 'Takis Fuego', icon: '/toppings/takis_icon.png' },
+    { id: 'doritosNachos', label: 'Doritos Nachos', icon: '/toppings/doritos_icon.png' },
+    { id: 'chipsJalapeño', label: 'Chips Jalapeño', icon: '/toppings/chips_jalapeño_icon.png' },
+    { id: 'cheetosTorciditos', label: 'Cheetos Torciditos', icon: '/toppings/cheetos_torciditos_icon.png' },
+    { id: 'cheetosFlamingHot', label: 'Cheetos Flaming Hot', icon: '/toppings/cheetos_flaming_hot_icon.png' },
+    { id: 'bastonChile', label: 'Baston de Chile', icon: '/toppings/baston_chile_icon.png' },
+    { id: 'cacahuatesJaponeses', label: 'Cacahuates Japoneses', icon: '/toppings/cacahuates_japoneses_icon.png' },
+    { id: 'cacahuatesEnchilados', label: 'Cacahuates Enchilados', icon: '/toppings/cacahuates_enchilados_icon.png' },
+    { id: 'gomitasAritos', label: 'Gomitas Aritos', icon: '/toppings/gomitas_aritos_icon.png' },
+    { id: 'gomitasGusanitos', label: 'Gomitas Gusanitos', icon: '/toppings/gomitas_gusanito_icon.png' },
+    { id: 'gomitasTiburones', label: 'Gomitas Tiburones', icon: '/toppings/gomitas_tiburon_icon.png' },
+    { id: 'jicama', label: 'Jicama', icon: '/toppings/jicama_icon.png' },
+    { id: 'pepino', label: 'Pepino', icon: '/toppings/pepino_icon.png' },
+    { id: 'picaFresas', label: 'Pica Fresas', icon: '/toppings/picafresas_icon.png' },
+    { id: 'pinia', label: 'Piña', icon: '/toppings/pinia_icon.png' },
+    { id: 'realitos', label: 'Realitos', icon: '/toppings/realitos_icon.png' },
+    { id: 'sandia', label: 'Sandia', icon: '/toppings/sandia_icon.png' },
 ];
 
 
@@ -59,6 +63,19 @@ const PasoToppings: React.FC<Props> = ({ selectedToppings, onChange }) => {
                     const isSelected = selectedToppings.includes(topping.id);
                     const reachedLimit = selectedToppings.length >= MAX_TOPPINGS;
 
+                    // Lógica para decidir qué mostrar como icono
+                    const renderIcon = () => {
+                        if (topping.icon.startsWith('/') || topping.icon.startsWith('http')) {
+                            return (
+                                <img
+                                    src={topping.icon}
+                                    alt={topping.label}
+                                    className="w-12 h-12 mb-2 object-contain"
+                                />
+                            );
+                        }
+                        return <span className="text-3xl mb-2">{topping.icon}</span>;
+                    };
 
                     return (
                         <button
@@ -67,20 +84,22 @@ const PasoToppings: React.FC<Props> = ({ selectedToppings, onChange }) => {
                             disabled={reachedLimit && !isSelected}
                             type="button"
                             className={`
-                relative p-4 flex flex-col items-center justify-center rounded-xl border-2 transition-all duration-200
+                relative p-4 flex flex-col items-center justify-center rounded-xl border-2 transition-all duration-200 min-h-[120px]
                 ${isSelected
-                                    ? 'border-indigo-600 bg-indigo-50 ring-2 ring-indigo-200'
+                                    ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-200' // Cambié a naranja para matchear tu header
                                     : 'border-gray-100 bg-white hover:border-gray-300'}
-              `}
+                ${reachedLimit && !isSelected ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+            `}
                         >
-                            <span className="text-3xl mb-2">{topping.icon}</span>
-                            <span className={`text-sm font-medium ${isSelected ? 'text-indigo-900' : 'text-gray-600'}`}>
+                            {renderIcon()}
+
+                            <span className={`text-sm font-medium text-center ${isSelected ? 'text-orange-900' : 'text-gray-600'}`}>
                                 {topping.label}
                             </span>
 
-                            {/* Checkmark visual */}
+                            {/* Checkmark */}
                             {isSelected && (
-                                <div className="absolute top-2 right-2 bg-indigo-600 rounded-full p-1">
+                                <div className="absolute top-2 right-2 bg-orange-500 rounded-full p-1">
                                     <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                                     </svg>

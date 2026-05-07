@@ -1,5 +1,6 @@
 import { Calendar, Clock, MapPin, MessageCircle, Package, User } from 'lucide-react';
 import type { Reserva } from '../../../interfaces/reserva';
+import { TOPPINGS_DISPONIBLES } from './PasoToppings';
 
 interface Props {
     datos: Reserva;
@@ -7,14 +8,12 @@ interface Props {
     onConfirm: () => void;
 }
 
-const ConfirmarReserva: React.FC<Props> = ({ datos, onBack, onConfirm }) => {
+export const getToppingLabel = (id: string) => {
+    const topping = TOPPINGS_DISPONIBLES.find(t => t.id === id);
+    return topping ? topping.label : id; // Si no lo encuentra, muestra el id por si acaso
+};
 
-    const fechaLegible = new Date(datos.fecha).toLocaleDateString('es-MX', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
+const ConfirmarReserva: React.FC<Props> = ({ datos, onBack, onConfirm }) => {
 
     return (
         <div className="space-y-6 max-w-lg mx-auto">
@@ -80,7 +79,7 @@ const ConfirmarReserva: React.FC<Props> = ({ datos, onBack, onConfirm }) => {
                             key={index}
                             className="bg-white px-3 py-1 rounded-full text-xs font-medium text-amber-700 border border-amber-200 shadow-sm"
                         >
-                            {topping}
+                            {getToppingLabel(topping)}
                         </span>
                     ))}
                 </div>

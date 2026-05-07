@@ -2,7 +2,7 @@ export interface Reserva {
     id?: string,
     nombreCliente: string,
     whatsapp: string,
-    email?: string,
+    email: string,
     fecha: string,
     hora: string,
     ubicacion: string,
