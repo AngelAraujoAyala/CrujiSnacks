@@ -8,5 +8,4 @@ export interface Reserva {
     ubicacion: string,
     paquete: string,
     toppings: string[],
-    estado: 'pendiente' | 'confirmado',
 };

@@ -28,7 +28,7 @@ export const FormularioReserva = () => {
       ubicacion: '',
       paquete: '30 vasitos',
       toppings: [],
-      estado: 'pendiente'
+      email: '',
     };
   });
 
@@ -47,13 +47,22 @@ export const FormularioReserva = () => {
     });
   }, [paso]);
 
+  const handleFinalConfirm = async () => {
+    try {
+      const respuesta = await fetch('http://localhost:3000/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(datos),
+      });
 
-  const handleFinalConfirm = () => {
-    const { nombreCliente, whatsapp, fecha, hora, ubicacion, paquete, toppings } = datos;
+      if (respuesta.ok) {
+        alert("¡Reserva guardada en el backend!");
+        const { nombreCliente, whatsapp, fecha, hora, ubicacion, paquete, toppings, email } = datos;
 
-    const mensaje = `*NUEVA RESERVA* 📋%0A
+        const mensaje = `*NUEVA RESERVA* 📋%0A
 *Cliente:* ${nombreCliente}%0A
 *WhatsApp:* ${whatsapp}%0A
+*Email:* ${email}%0A
 *Fecha:* ${fecha}%0A
 *Hora:* ${hora}%0A
 *Ubicación:* ${ubicacion}%0A
@@ -62,12 +71,17 @@ export const FormularioReserva = () => {
 --------------------------%0A
 _Enviado desde el formulario web_`;
 
-    const numeroTelefono = "526624509876";
+        const numeroTelefono = "526624509876";
 
-    localStorage.removeItem('progreso_crujisnacks');
+        localStorage.removeItem('progreso_crujisnacks');
 
-    window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
+        window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
+      }
+    } catch (error) {
+      console.error("Error al conectar con el servidor", error);
+    }
   };
+
 
   const validarPasoActual = () => {
     const nuevosErrores: ErroresReserva = {};
@@ -144,11 +158,11 @@ _Enviado desde el formulario web_`;
         {paso === 4 && (<ConfirmarReserva datos={datos} onBack={() => setPaso(3)} onConfirm={handleFinalConfirm} />)}
 
         <div className="my-4">
-          {errores.nombreCliente && <Alert mensaje="¡Ups! El nombre es obligatorio." tipo="error" />}
-          {errores.whatsapp && <Alert mensaje="¡Ups! El número debe tener exactamente 10 dígitos." tipo="error" />}
-          {errores.ubicacion && <Alert mensaje="¡Ups! La ubicación es obligatoria." tipo="error" />}
+          {errores.nombreCliente && <Alert mensaje="El nombre es obligatorio." tipo="error" />}
+          {errores.whatsapp && <Alert mensaje="El número debe tener exactamente 10 dígitos." tipo="error" />}
+          {errores.ubicacion && <Alert mensaje="La ubicación es obligatoria." tipo="error" />}
           {errores.email && <Alert mensaje={errores.email} tipo="error" />}
-          {errores.fecha && <Alert mensaje="¡Ups! Ingresa fecha válida." tipo="error" />}
+          {errores.fecha && <Alert mensaje="Ingresa fecha válida." tipo="error" />}
           {errores.hora && <Alert mensaje="¡Ups! Ingresa hora válida." tipo="error" />}
           {errores.toppings && <Alert mensaje={errores.toppings} tipo="error" />}
         </div>
