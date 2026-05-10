@@ -17,18 +17,14 @@ export class ToppingsController {
     return this.toppingsService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.toppingsService.findOne(+id);
-  // }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateToppingDto: UpdateToppingDto) {
     return this.toppingsService.update(+id, updateToppingDto);
   }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.toppingsService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.toppingsService.remove(+id);
+  }
 }
