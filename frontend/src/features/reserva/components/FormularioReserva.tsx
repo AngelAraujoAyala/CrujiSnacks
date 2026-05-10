@@ -7,6 +7,7 @@ import PasoDatosEvento from './PasoDatosEvento';
 import PasoToppings from './PasoToppings';
 import ConfirmarReserva from './ConfirmarReserva';
 import { getToppingLabel } from './ConfirmarReserva';
+import { crearReservacion } from '../services/reservaService';
 
 type ErroresReserva = Partial<Record<keyof Reserva, string>>;
 
@@ -49,17 +50,13 @@ export const FormularioReserva = () => {
 
   const handleFinalConfirm = async () => {
     try {
-      const respuesta = await fetch('http://localhost:3000/reservations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos),
-      });
 
-      if (respuesta.ok) {
-        alert("¡Reserva guardada en el backend!");
-        const { nombreCliente, whatsapp, fecha, hora, ubicacion, paquete, toppings, email } = datos;
+      await crearReservacion(datos);
 
-        const mensaje = `*NUEVA RESERVA* 📋%0A
+      alert("¡Reserva guardada en el backend!");
+      const { nombreCliente, whatsapp, fecha, hora, ubicacion, paquete, toppings, email } = datos;
+
+      const mensaje = `*NUEVA RESERVA* 📋%0A
 *Cliente:* ${nombreCliente}%0A
 *WhatsApp:* ${whatsapp}%0A
 *Email:* ${email}%0A
@@ -71,14 +68,14 @@ export const FormularioReserva = () => {
 --------------------------%0A
 _Enviado desde el formulario web_`;
 
-        const numeroTelefono = "526624509876";
+      const numeroTelefono = "526624509876";
 
-        localStorage.removeItem('progreso_crujisnacks');
+      localStorage.removeItem('progreso_crujisnacks');
 
-        window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
-      }
+      window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
     } catch (error) {
       console.error("Error al conectar con el servidor", error);
+      alert("Hubo un problema al guardar tu reserva");
     }
   };
 
