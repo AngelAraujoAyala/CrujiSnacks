@@ -5,18 +5,16 @@ import { UpdateToppingDto } from './dto/update-topping.dto';
 
 @Injectable()
 export class ToppingsService {
-  constructor(private prisma: PrismaService) { } // Inyecta Prisma
+  constructor(private prisma: PrismaService) { }
 
-  // Para que el cliente vea qué toppings puede elegir
   findAll() {
     return this.prisma.topping.findMany({
       orderBy: { nombre: 'asc' },
     });
   }
 
-  // Para que la dueña pueda activar/desactivar el stock
-  update(id: number, updateToppingDto: UpdateToppingDto) {
-    return this.prisma.topping.update({
+  async update(id: number, updateToppingDto: UpdateToppingDto) {
+    return await this.prisma.topping.update({
       where: { id },
       data: updateToppingDto,
     });
@@ -25,6 +23,12 @@ export class ToppingsService {
   create(createToppingDto: CreateToppingDto) {
     return this.prisma.topping.create({
       data: createToppingDto,
+    });
+  }
+
+  async remove(id: number) {
+    return await this.prisma.topping.delete({
+      where: { id },
     });
   }
 }
