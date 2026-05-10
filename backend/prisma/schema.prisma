@@ -1,0 +1,38 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Reservation {
+  id             Int      @id @default(autoincrement())
+  nombreCliente  String
+  whatsapp       String
+  email          String
+  fecha          String
+  hora           String
+  ubicacion      String
+  paquete        String
+  toppings       String[]
+  createdAt      DateTime @default(now())
+}
+
+model Package {
+  id          Int      @id @default(autoincrement())
+  nombre      String   // Ej: "Paquete Cumpleañero"
+  descripcion String?
+  precio      Decimal
+  activo      Boolean  @default(true)
+}
+
+model Topping {
+  id     Int     @id @default(autoincrement())
+  nombre String  // Ej: "Chamoy", "Tajín"
+  iconURL String?
+  stock  Boolean @default(true) // Para marcar si se agotó
+}
