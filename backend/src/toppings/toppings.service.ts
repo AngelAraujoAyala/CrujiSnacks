@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateToppingDto } from './dto/create-topping.dto';
 import { UpdateToppingDto } from './dto/update-topping.dto';
+import { supabase } from '../supabase/supabase.client';
 
 @Injectable()
 export class ToppingsService {
@@ -30,5 +31,31 @@ export class ToppingsService {
     return await this.prisma.topping.delete({
       where: { id },
     });
+  }
+
+  async uploadImage(
+    file: Express.Multer.File,
+  ) {
+
+    const fileName =
+      `${Date.now()}-${file.originalname}`;
+
+    const { data, error } =
+      await supabase.storage
+        .from('toppings')
+        .upload(fileName, file.buffer, {
+          contentType: file.mimetype,
+        });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    const imageUrl =
+      `${process.env.SUPABASE_URL}/storage/v1/object/public/toppings/${fileName}`;
+
+    return {
+      imageUrl,
+    };
   }
 }

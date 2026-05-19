@@ -12,6 +12,7 @@ export const GestionToppings = () => {
     const [toppings, setToppings] = useState<Topping[]>([]);
     const [selectedTopping, setSelectedTopping] =
         useState<Topping | null>(null);
+    const [isCreating, setIsCreating] = useState(false);
 
     useEffect(() => {
         loadToppings();
@@ -52,23 +53,51 @@ export const GestionToppings = () => {
         }
     };
 
+
+
     const saveChanges = async () => {
 
         if (!selectedTopping) return;
 
         try {
 
-            await crujiApi.put(
-                `/toppings/${selectedTopping.id}`,
-                selectedTopping
-            );
+            const payload = {
+                nombre: selectedTopping.nombre,
+                iconURL: selectedTopping.iconURL,
+                stock: selectedTopping.stock,
+            };
 
-            setSelectedTopping(null);
+            // NUEVO TOPPING
+            if (isCreating) {
+
+                await crujiApi.post(
+                    "/toppings",
+                    selectedTopping
+                );
+
+            }
+
+            // EDITAR
+            else {
+
+                await crujiApi.patch(
+                    `/toppings/${selectedTopping.id}`,
+                    payload
+                );
+
+            }
 
             loadToppings();
 
+            setSelectedTopping(null);
+
+            setIsCreating(false);
+
         } catch (error) {
+
             console.error(error);
+
+            alert("Error guardando topping");
         }
     };
 
@@ -106,7 +135,19 @@ export const GestionToppings = () => {
                     </p>
                 </div>
 
-                <button className="bg-orange-500 text-white px-5 py-3 rounded-xl">
+                <button
+                    onClick={() => {
+
+                        setSelectedTopping({
+                            nombre: "",
+                            iconURL: "",
+                            stock: true,
+                        } as Topping);
+
+                        setIsCreating(true);
+                    }}
+                    className="bg-orange-500 text-white px-5 py-3 rounded-xl"
+                >
                     + Nuevo Topping
                 </button>
             </div>
@@ -134,8 +175,12 @@ export const GestionToppings = () => {
                 <ToppingModal
                     topping={selectedTopping}
                     setTopping={setSelectedTopping}
-                    onClose={() => setSelectedTopping(null)}
+                    onClose={() => {
+                        setSelectedTopping(null);
+                        setIsCreating(false);
+                    }}
                     onSave={saveChanges}
+                    isCreating={isCreating}
                 />
 
             )}
