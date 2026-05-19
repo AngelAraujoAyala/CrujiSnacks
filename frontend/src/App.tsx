@@ -1,11 +1,11 @@
 
 import './App.css'
-import FormularioReserva from './features/reserva';
+import { GestionToppings } from './features/inventario/components/GestionToppings';
 
 function App() {
   return (
     <>
-      <FormularioReserva />
+      <GestionToppings />
     </>
   )
 }
