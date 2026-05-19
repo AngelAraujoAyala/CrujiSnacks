@@ -6,13 +6,18 @@ import {
 
 import { AdminLayout } from "../layout/AdminLayout";
 
-import { GestionToppings } from "../features/inventario/components/GestionToppings";
+import { GestionToppings } from "../features/inventario";
+
+import { FormularioReserva } from '../features/reserva'
+import { GestionPaquetes } from "../features/paquetes";
 
 export const AppRouter = () => {
     return (
         <BrowserRouter>
 
             <Routes>
+
+                <Route path="/reserva" element={<FormularioReserva />} />
 
                 <Route path="/admin" element={<AdminLayout />}>
 
@@ -23,7 +28,7 @@ export const AppRouter = () => {
 
                     <Route
                         path="paquetes"
-                        element={<h1>Paquetes</h1>}
+                        element={<GestionPaquetes />}
                     />
 
                     <Route
