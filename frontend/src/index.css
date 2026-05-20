@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+.rbc-btn-group button {
+    pointer-events: auto !important;
+  }
+  
+  .rbc-toolbar button {
+    pointer-events: auto !important;
+    cursor: pointer;
+  }

@@ -59,7 +59,9 @@ export const ReservaAccordion = ({
                     <p className="text-gray-500">
 
                         {new Date(
-                            reserva.fecha
+                            reserva.fechaInicio
+                            + " - " +
+                            reserva.fechaFin
                         ).toLocaleString()}
 
                     </p>
