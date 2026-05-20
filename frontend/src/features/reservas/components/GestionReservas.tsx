@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
-
 import crujiApi from "../../../services/crujiApi";
-
 import type { Reserva } from "../interfaces/reserva";
-
 import type { BloqueoFecha } from "../interfaces/bloqueo";
-
 import { ReservaAccordion } from "./ReservaAccordion";
-
 import { ReservaCalendar } from "./ReservaCalendar";
-
 import { BloqueoModal } from "./BloqueoModal";
+import { ReservaDetailsModal } from "./ReservaDetailsModal";
+import { BloqueoDetailsModal } from "./BloqueoDetailsModal";
 
 export const GestionReservas = () => {
   const [reservas, setReservas] = useState<Reserva[]>([]);
@@ -18,6 +14,12 @@ export const GestionReservas = () => {
   const [bloqueos, setBloqueos] = useState<BloqueoFecha[]>([]);
 
   const [showBloqueoModal, setShowBloqueoModal] = useState(false);
+
+  const [selectedReserva, setSelectedReserva] = useState<Reserva | null>(null);
+
+  const [selectedBloqueo, setSelectedBloqueo] = useState<BloqueoFecha | null>(
+    null,
+  );
 
   // LOAD RESERVAS
   const loadReservas = async () => {
@@ -54,6 +56,20 @@ export const GestionReservas = () => {
       await crujiApi.patch(`/reservations/${id}/status`, { estado });
 
       await loadReservas();
+
+      // refrescar modal abierto
+      const updatedReserva = reservas.find((r) => r.id === id);
+
+      if (updatedReserva) {
+        setSelectedReserva({
+          ...updatedReserva,
+          estado: estado as
+            | "PENDIENTE"
+            | "CONFIRMADA"
+            | "CANCELADA"
+            | "COMPLETADA",
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -76,6 +92,20 @@ export const GestionReservas = () => {
       console.error(error);
 
       alert("Error creando bloqueo");
+    }
+  };
+
+  const deleteBloqueo = async (id: number) => {
+    try {
+      await crujiApi.delete(`/bloqueos/${id}`);
+
+      await loadBloqueos();
+
+      setSelectedBloqueo(null);
+    } catch (error) {
+      console.error(error);
+
+      alert("Error eliminando bloqueo");
     }
   };
 
@@ -113,7 +143,12 @@ export const GestionReservas = () => {
 
       {/* CALENDARIO */}
       <div className="mb-8">
-        <ReservaCalendar reservas={reservas} bloqueos={bloqueos} />
+        <ReservaCalendar
+          reservas={reservas}
+          bloqueos={bloqueos}
+          onSelectReserva={setSelectedReserva}
+          onSelectBloqueo={setSelectedBloqueo}
+        />
       </div>
 
       {/* LISTA */}
@@ -127,12 +162,32 @@ export const GestionReservas = () => {
         ))}
       </div>
 
-      {/* MODAL */}
+      {/* MODAL BLOQUEO */}
       {showBloqueoModal && (
         <BloqueoModal
           onClose={() => setShowBloqueoModal(false)}
           onSave={createBloqueo}
         />
+      )}
+
+      {/* MODAL RESERVA */}
+      {selectedReserva && (
+        <ReservaDetailsModal
+          reserva={selectedReserva}
+          onClose={() => setSelectedReserva(null)}
+          onUpdateStatus={updateStatus}
+        />
+      )}
+
+      {/* MODAL BLOQUEO */}
+      {selectedBloqueo && (
+        <BloqueoDetailsModal
+        bloqueo={selectedBloqueo}
+        onClose={() =>
+          setSelectedBloqueo(null)
+        }
+        onDelete={deleteBloqueo}
+      />
       )}
     </div>
   );

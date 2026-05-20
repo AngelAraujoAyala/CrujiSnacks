@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get } from '@nestjs/common';
+import { Controller, Post, Body, Get, Delete, Param } from '@nestjs/common';
 
 import { BloqueosService } from './bloqueos.service';
 
@@ -14,5 +14,10 @@ export class BloqueosController {
   @Get()
   findAll() {
     return this.bloqueosService.findAll();
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.bloqueosService.remove(+id);
   }
 }

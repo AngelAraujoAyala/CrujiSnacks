@@ -1,4 +1,7 @@
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import {
+  Calendar,
+  momentLocalizer,
+} from "react-big-calendar";
 
 import moment from "moment";
 
@@ -14,120 +17,155 @@ interface Props {
   reservas: Reserva[];
 
   bloqueos: BloqueoFecha[];
+
+  onSelectReserva: (
+    reserva: Reserva
+  ) => void;
+
+  onSelectBloqueo: (
+    bloqueo: BloqueoFecha
+  ) => void;
 }
 
-export const ReservaCalendar = ({ reservas, bloqueos }: Props) => {
+export const ReservaCalendar = ({
+  reservas,
+  bloqueos,
+  onSelectReserva,
+  onSelectBloqueo,
+}: Props) => {
   // RESERVAS
-  const reservaEvents = reservas.map((reserva) => {
-    const start = new Date(reserva.fecha);
+  const reservaEvents = reservas.map(
+    (reserva) => ({
+      title: `${reserva.nombreCliente}`,
 
-    const end = new Date(start.getTime() + 60 * 60 * 1000);
+      start: new Date(reserva.fecha),
 
-    return {
-      title: reserva.nombreCliente,
-
-      start,
-
-      end,
+      end: new Date(reserva.fecha),
 
       resource: {
-        tipo: "reserva",
-        ...reserva,
+        type: "reserva",
+        data: reserva,
       },
-    };
-  });
+    })
+  );
 
   // BLOQUEOS
-  const bloqueoEvents = bloqueos.map((bloqueo) => {
-    // EXTRAER SOLO YYYY-MM-DD
-    const onlyDate = bloqueo.fecha.split("T")[0];
+  const bloqueoEvents = bloqueos.map(
+    (bloqueo) => {
+      const onlyDate =
+        bloqueo.fecha.split("T")[0];
 
-    // CREAR FECHA LOCAL
-    const fecha = new Date(`${onlyDate}T00:00:00`);
+      const fecha = new Date(
+        `${onlyDate}T00:00:00`
+      );
 
-    const end = new Date(fecha.getTime() + 60 * 60 * 1000);
+      return {
+        title: "Bloqueado",
 
-    return {
-      title: "BLOQUEADO",
+        start: fecha,
 
-      start: fecha,
+        end: fecha,
 
-      end,
+        resource: {
+          type: "bloqueo",
+          data: bloqueo,
+        },
+      };
+    }
+  );
 
-      resource: {
-        tipo: "bloqueo",
-        ...bloqueo,
-      },
-    };
-  });
-
-  // TODOS LOS EVENTOS
-  const events = [...reservaEvents, ...bloqueoEvents];
+  const events = [
+    ...reservaEvents,
+    ...bloqueoEvents,
+  ];
 
   return (
-    <div
-      className="
-        bg-white
-        rounded-2xl
-        shadow
-        p-5
-        h-[700px]
-      "
-    >
+    <div className="bg-white p-5 rounded-2xl shadow">
       <Calendar
         localizer={localizer}
         events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{
-          height: "100%",
-        }}
+        style={{ height: 700 }}
         popup
-        views={["month", "week", "day"]}
-        messages={{
-          next: "Siguiente",
-          previous: "Anterior",
-          today: "Hoy",
-          month: "Mes",
-          week: "Semana",
-          day: "Día",
+        selectable
+        views={[
+          "month",
+          "week",
+          "day",
+          "agenda",
+        ]}
+        onSelectEvent={(event: any) => {
+          const resource =
+            event.resource;
+
+          if (
+            resource.type === "reserva"
+          ) {
+            onSelectReserva(
+              resource.data
+            );
+          }
+
+          if (
+            resource.type === "bloqueo"
+          ) {
+            onSelectBloqueo(
+              resource.data
+            );
+          }
         }}
-        eventPropGetter={(event) => {
-          // BLOQUEOS
-          if (event.resource.tipo === "bloqueo") {
+        eventPropGetter={(event: any) => {
+          const resource =
+            event.resource;
+
+          // BLOQUEO
+          if (
+            resource.type === "bloqueo"
+          ) {
             return {
               style: {
-                backgroundColor: "#dc2626",
-                borderRadius: "8px",
+                backgroundColor:
+                  "#ef4444",
+                borderRadius: "10px",
                 border: "none",
                 color: "white",
               },
             };
           }
 
-          // RESERVAS
-          const reserva = event.resource as Reserva;
+          // RESERVA
+          const estado =
+            resource.data.estado;
 
-          let backgroundColor = "#facc15";
+          let backgroundColor =
+            "#facc15";
 
-          switch (reserva.estado) {
-            case "CONFIRMADA":
-              backgroundColor = "#3b82f6";
-              break;
+          if (
+            estado === "CONFIRMADA"
+          ) {
+            backgroundColor =
+              "#22c55e";
+          }
 
-            case "COMPLETADA":
-              backgroundColor = "#22c55e";
-              break;
+          if (
+            estado === "CANCELADA"
+          ) {
+            backgroundColor =
+              "#ef4444";
+          }
 
-            case "CANCELADA":
-              backgroundColor = "#ef4444";
-              break;
+          if (
+            estado === "COMPLETADA"
+          ) {
+            backgroundColor =
+              "#3b82f6";
           }
 
           return {
             style: {
               backgroundColor,
-              borderRadius: "8px",
+              borderRadius: "10px",
               border: "none",
               color: "white",
             },

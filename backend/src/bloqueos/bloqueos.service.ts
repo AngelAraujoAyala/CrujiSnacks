@@ -32,4 +32,10 @@ export class BloqueosService {
       },
     });
   }
+
+  async remove(id: number) {
+    return this.prisma.bloqueoFecha.delete({
+      where: { id },
+    });
+  }
 }
