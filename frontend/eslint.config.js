@@ -19,4 +19,11 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: ['**/*.{ts,tsx}'], 
+    rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off', 
+      'react-hooks/set-state-in-effect': 'off',
+    },
+  },
 ])

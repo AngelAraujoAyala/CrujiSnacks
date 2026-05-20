@@ -5,11 +5,10 @@ import {
 } from "react-router-dom";
 
 import { AdminLayout } from "../layout/AdminLayout";
-
 import { GestionToppings } from "../features/inventario";
-
 import { FormularioReserva } from '../features/reserva'
 import { GestionPaquetes } from "../features/paquetes";
+import { GestionReservas } from "../features/reservas";
 
 export const AppRouter = () => {
     return (
@@ -32,8 +31,8 @@ export const AppRouter = () => {
                     />
 
                     <Route
-                        path="reservas"
-                        element={<h1>Reservas</h1>}
+                        path="/admin/reservas"
+                        element={<GestionReservas />}
                     />
 
                 </Route>
