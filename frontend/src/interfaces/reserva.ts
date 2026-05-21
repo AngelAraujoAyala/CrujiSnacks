@@ -1,11 +1,18 @@
 export interface Reserva {
-    id?: string,
-    nombreCliente: string,
-    whatsapp: string,
-    email: string,
-    fecha: string,
-    hora: string,
-    ubicacion: string,
-    paquete: string,
-    toppings: string[],
-};
+  nombreCliente: string;
+
+  emailCliente: string;
+
+  telefono: string;
+
+  fechaInicio: string;
+
+  fechaFin: string;
+
+  lugar: string;
+
+  packageId: number | null;
+
+  toppingsIds: number[];
+
+}

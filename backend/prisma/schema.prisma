@@ -16,14 +16,15 @@ model Reservation {
   emailCliente  String
   telefono      String
 
-  fecha DateTime?
-
-  fechaInicio DateTime?
-  fechaFin    DateTime?
+  fechaInicio DateTime
+  fechaFin    DateTime
 
   lugar String
 
   estado ReservaEstado @default(PENDIENTE)
+
+  packageId Int?
+  package   Package? @relation(fields: [packageId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -62,6 +63,7 @@ model Package {
   descripcion String?
   precio      Decimal
   activo      Boolean  @default(true)
+  reservas Reservation[]
 }
 
 model BloqueoFecha {

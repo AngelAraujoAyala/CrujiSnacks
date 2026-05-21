@@ -1,12 +1,7 @@
-export interface Paquete {
-
-    id: number;
-
-    nombre: string;
-
-    descripcion?: string;
-
-    precio: number;
-
-    activo: boolean;
+export interface Package {
+  id: string;
+  nombre: string;
+  descripcion?: string;
+  precio: number;
+  activo: boolean;
 }

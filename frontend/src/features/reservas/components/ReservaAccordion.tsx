@@ -56,16 +56,6 @@ export const ReservaAccordion = ({
 
                     </h3>
 
-                    <p className="text-gray-500">
-
-                        {new Date(
-                            reserva.fechaInicio
-                            + " - " +
-                            reserva.fechaFin
-                        ).toLocaleString()}
-
-                    </p>
-
                 </div>
 
                 <div className="flex items-center gap-3">

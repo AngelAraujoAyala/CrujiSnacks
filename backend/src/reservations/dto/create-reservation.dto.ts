@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsEnum,
   IsArray,
+  IsNumber,
 } from 'class-validator';
 
 import { ReservaEstado } from '@prisma/client';
@@ -19,16 +20,21 @@ export class CreateReservationDto {
   telefono: string;
 
   @IsDateString()
-  fecha: string;
+  fechaInicio: string;
+
+  @IsDateString()
+  fechaFin: string;
 
   @IsString()
   lugar: string;
+
+  @IsNumber()
+  packageId: number;
 
   @IsOptional()
   @IsEnum(ReservaEstado)
   estado?: ReservaEstado;
 
-  @IsOptional()
   @IsArray()
-  toppingsIds?: number[];
+  toppingsIds: number[];
 }

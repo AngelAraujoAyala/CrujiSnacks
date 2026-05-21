@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react';
-import type { Reserva } from '../../../interfaces/reserva';
-import PasoContacto from './PasoContacto';
-import { Button } from '../../../components/ui/Buttons';
-import { Alert } from '../../../components/ui/Alert';
-import PasoDatosEvento from './PasoDatosEvento';
-import PasoToppings from './PasoToppings';
-import ConfirmarReserva from './ConfirmarReserva';
-import { getToppingLabel } from './ConfirmarReserva';
-import { crearReservacion } from '../services/reservaService';
+import { useEffect, useState } from "react";
+
+import PasoContacto from "./PasoContacto";
+import PasoDatosEvento from "./PasoDatosEvento";
+import PasoToppings from "./PasoToppings";
+import ConfirmarReserva from "./ConfirmarReserva";
+
+import { Button } from "../../../components/ui/Buttons";
+import { Alert } from "../../../components/ui/Alert";
+
+import { crearReservacion } from "../services/reservaService";
+import { getPackages, type Package } from "../services/packageService";
+import { getToppings, type Topping } from "../services/toppingService";
+
+import type { Reserva } from "../../../interfaces/reserva";
 
 type ErroresReserva = Partial<Record<keyof Reserva, string>>;
 
 export const FormularioReserva = () => {
   const [datos, setDatos] = useState<Reserva>(() => {
-    const guardado = localStorage.getItem('progreso_crujisnacks');
+    const guardado = localStorage.getItem("progreso_crujisnacks");
+
     if (guardado) {
       try {
         return JSON.parse(guardado);
@@ -21,112 +27,200 @@ export const FormularioReserva = () => {
         console.error("Error recuperando datos guardados", e);
       }
     }
+
     return {
-      nombreCliente: '',
-      whatsapp: '',
-      fecha: '',
-      hora: '',
-      ubicacion: '',
-      paquete: '30 vasitos',
-      toppings: [],
-      email: '',
+      nombreCliente: "",
+      emailCliente: "",
+      telefono: "",
+
+      fechaInicio: "",
+      fechaFin: "",
+
+      lugar: "",
+
+      packageId: null,
+
+      toppingsIds: [],
     };
   });
 
+  const [packages, setPackages] = useState<Package[]>([]);
+
+  const [toppings, setToppings] = useState<Topping[]>([]);
+
   const [paso, setPaso] = useState(1);
+
+  const [loading, setLoading] = useState(false);
+
   const [errores, setErrores] = useState<ErroresReserva>({});
 
+  // CARGAR DATA
   useEffect(() => {
-    localStorage.setItem('progreso_crujisnacks', JSON.stringify(datos));
+    const fetchData = async () => {
+      try {
+        const [packagesData, toppingsData] = await Promise.all([
+          getPackages(),
+          getToppings(),
+        ]);
+
+        setPackages(packagesData);
+
+        setToppings(toppingsData.filter((t) => t.stock));
+      } catch (error) {
+        console.error("Error cargando datos", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // GUARDAR PROGRESO
+  useEffect(() => {
+    localStorage.setItem("progreso_crujisnacks", JSON.stringify(datos));
   }, [datos]);
 
-  // Este efecto se dispara cada vez que el valor de 'paso' cambia
+  // SCROLL
   useEffect(() => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth' // 'smooth' para desplazamiento animado, 'auto' para instantáneo
+      behavior: "smooth",
     });
   }, [paso]);
 
+  // CONFIRMAR
   const handleFinalConfirm = async () => {
     try {
+      setLoading(true);
 
       await crearReservacion(datos);
 
-      alert("¡Reserva guardada en el backend!");
-      const { nombreCliente, whatsapp, fecha, hora, ubicacion, paquete, toppings, email } = datos;
+      alert("¡Reserva guardada correctamente!");
+
+      const selectedPackage = packages.find((p) => p.id === datos.packageId);
+
+      const selectedToppings = toppings.filter((t) =>
+        datos.toppingsIds.includes(t.id),
+      );
 
       const mensaje = `*NUEVA RESERVA* 📋%0A
-*Cliente:* ${nombreCliente}%0A
-*WhatsApp:* ${whatsapp}%0A
-*Email:* ${email}%0A
-*Fecha:* ${fecha}%0A
-*Hora:* ${hora}%0A
-*Ubicación:* ${ubicacion}%0A
-*Paquete:* ${paquete}%0A
-*Toppings (10):* ${toppings.map(getToppingLabel).join(', ')}%0A
+*Cliente:* ${datos.nombreCliente}%0A
+*WhatsApp:* ${datos.telefono}%0A
+*Email:* ${datos.emailCliente}%0A
+*Inicio:* ${datos.fechaInicio}%0A
+*Fin:* ${datos.fechaFin}%0A
+*Ubicación:* ${datos.lugar}%0A
+*Paquete:* ${selectedPackage?.nombre ?? "Sin paquete"}%0A
+*Toppings:* ${selectedToppings.map((t) => t.nombre).join(", ")}%0A
 --------------------------%0A
 _Enviado desde el formulario web_`;
 
       const numeroTelefono = "526624509876";
 
-      localStorage.removeItem('progreso_crujisnacks');
+      localStorage.removeItem("progreso_crujisnacks");
 
-      window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, '_blank');
+      window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, "_blank");
     } catch (error) {
-      console.error("Error al conectar con el servidor", error);
+      console.error(error);
+
       alert("Hubo un problema al guardar tu reserva");
+    } finally {
+      setLoading(false);
     }
   };
 
-
+  // VALIDACIONES
   const validarPasoActual = () => {
     const nuevosErrores: ErroresReserva = {};
+
+    // PASO 1
     if (paso === 1) {
-      if (!datos.nombreCliente.trim()) nuevosErrores.nombreCliente = "El nombre es obligatorio";
-      if (datos.whatsapp.trim().replace(/\D/g, '').length !== 10) nuevosErrores.whatsapp = "Minimo 10 dígitos";
-      if (!datos.ubicacion.trim()) nuevosErrores.ubicacion = "Dinos dónde será el evento";
+      if (!datos.nombreCliente.trim()) {
+        nuevosErrores.nombreCliente = "El nombre es obligatorio";
+      }
+
+      if (datos.telefono.trim().replace(/\D/g, "").length !== 10) {
+        nuevosErrores.telefono = "El teléfono debe tener 10 dígitos";
+      }
+
+      if (!datos.lugar.trim()) {
+        nuevosErrores.lugar = "La ubicación es obligatoria";
+      }
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-      if (!datos.email) {
-        nuevosErrores.email = "El correo es obligatorio";
-      } else if (!emailRegex.test(datos.email)) {
-        nuevosErrores.email = "Formato de correo inválido";
+      if (!datos.emailCliente) {
+        nuevosErrores.emailCliente = "El correo es obligatorio";
+      } else if (!emailRegex.test(datos.emailCliente)) {
+        nuevosErrores.emailCliente = "Correo inválido";
       }
-
     }
+
+    // PASO 2
     if (paso === 2) {
-      if (!datos.fecha) nuevosErrores.fecha = "Selecciona una fecha";
-      if (!datos.hora) nuevosErrores.hora = "Selecciona una hora";
-      const hoy = new Date().toISOString().split('T')[0];
-      if (datos.fecha && datos.fecha < hoy) {
-        nuevosErrores.fecha = "No puedes reservar en el pasado";
+      if (!datos.fechaInicio) {
+        nuevosErrores.fechaInicio = "Selecciona fecha inicio";
+      }
+
+      if (!datos.fechaFin) {
+        nuevosErrores.fechaFin = "Selecciona fecha final";
+      }
+
+      if (!datos.packageId) {
+        nuevosErrores.packageId = "Selecciona un paquete";
+      }
+
+      const inicio = new Date(datos.fechaInicio);
+
+      const fin = new Date(datos.fechaFin);
+
+      if (fin <= inicio) {
+        nuevosErrores.fechaFin = "La fecha final debe ser posterior";
+      }
+
+      if (inicio < new Date()) {
+        nuevosErrores.fechaInicio = "No puedes reservar en el pasado";
       }
     }
-    if (paso === 3) {
-      if (datos.toppings.length < 10) nuevosErrores.toppings = "Selecciona 10 toppings";
-    }
-    setErrores(nuevosErrores);
-    return Object.keys(nuevosErrores).length === 0;
-  }
 
+    // PASO 3
+    if (paso === 3) {
+      if (datos.toppingsIds.length < 10) {
+        nuevosErrores.toppingsIds = "Selecciona 10 toppings";
+      }
+    }
+
+    setErrores(nuevosErrores);
+
+    return Object.keys(nuevosErrores).length === 0;
+  };
+
+  // SIGUIENTE
   const manejarSiguiente = () => {
     if (paso === 4) return;
+
     if (validarPasoActual()) {
       setPaso(paso + 1);
     }
   };
 
+  // ATRÁS
   const manejarAtras = () => {
     if (paso === 1) return;
-    setPaso(paso - 1);
-  }
 
-  const updateToppings = (nuevosToppings: string[]) => {
-    setDatos(prev => ({ ...prev, toppings: nuevosToppings }));
+    setPaso(paso - 1);
+  };
+
+  // TOPPINGS
+  const updateToppings = (nuevosToppings: number[]) => {
+    setDatos((prev) => ({
+      ...prev,
+      toppingsIds: nuevosToppings,
+    }));
+
     if (nuevosToppings.length === 10) {
-      setErrores(prevErrors => {
-        const { toppings, ...rest } = prevErrors;
+      setErrores((prevErrors) => {
+        const { toppingsIds, ...rest } = prevErrors;
+
         return rest;
       });
     }
@@ -134,51 +228,96 @@ _Enviado desde el formulario web_`;
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-orange-100">
+      {/* HEADER */}
       <div className="bg-orange-500 p-6 text-white text-center">
-        <h2 className="text-2xl font-bold uppercase tracking-wider">CrujiSnacks</h2>
-        <p className="text-orange-100 text-sm">Estás a unos pasos de tu barra de snacks</p>
+        <h2 className="text-2xl font-bold uppercase tracking-wider">
+          CrujiSnacks
+        </h2>
+
+        <p className="text-orange-100 text-sm">
+          Estás a unos pasos de tu barra de snacks
+        </p>
       </div>
 
+      {/* CONTENT */}
       <div className="p-8">
+        {/* PROGRESS */}
         <div className="flex justify-between mb-8">
           {[1, 2, 3, 4].map((num) => (
             <div
               key={num}
-              className={`h-2 w-full mx-1 rounded-full ${paso >= num ? 'bg-orange-500' : 'bg-gray-200'}`}
+              className={`
+                  h-2 w-full mx-1 rounded-full
+
+                  ${paso >= num ? "bg-orange-500" : "bg-gray-200"}
+                `}
             />
           ))}
         </div>
 
-        {paso === 1 && <PasoContacto datos={datos} setDatos={setDatos} errores={errores} />}
-        {paso === 2 && <PasoDatosEvento datos={datos} setDatos={setDatos} errores={errores} />}
-        {paso === 3 && (<PasoToppings selectedToppings={datos.toppings} onChange={updateToppings} />)}
-        {paso === 4 && (<ConfirmarReserva datos={datos} onBack={() => setPaso(3)} onConfirm={handleFinalConfirm} />)}
+        {/* PASOS */}
+        {paso === 1 && (
+          <PasoContacto datos={datos} setDatos={setDatos} errores={errores} />
+        )}
 
+        {paso === 2 && (
+          <PasoDatosEvento
+            datos={datos}
+            setDatos={setDatos}
+            errores={errores}
+          />
+        )}
+
+        {paso === 3 && (
+          <PasoToppings
+          toppings={toppings}
+          selectedToppings={datos.toppingsIds}
+          onChange={updateToppings}
+        />
+        )}
+
+        {paso === 4 && (
+          <ConfirmarReserva
+            datos={datos}
+            toppings={toppings}
+            packages={packages}
+            onBack={() => setPaso(3)}
+            onConfirm={handleFinalConfirm}
+          />
+        )}
+
+        {/* ALERTAS */}
         <div className="my-4">
-          {errores.nombreCliente && <Alert mensaje="El nombre es obligatorio." tipo="error" />}
-          {errores.whatsapp && <Alert mensaje="El número debe tener exactamente 10 dígitos." tipo="error" />}
-          {errores.ubicacion && <Alert mensaje="La ubicación es obligatoria." tipo="error" />}
-          {errores.email && <Alert mensaje={errores.email} tipo="error" />}
-          {errores.fecha && <Alert mensaje="Ingresa fecha válida." tipo="error" />}
-          {errores.hora && <Alert mensaje="¡Ups! Ingresa hora válida." tipo="error" />}
-          {errores.toppings && <Alert mensaje={errores.toppings} tipo="error" />}
+          {Object.values(errores).map(
+            (error, index) =>
+              error && <Alert key={index} mensaje={error} tipo="error" />,
+          )}
         </div>
-        <div className='flex justify-between'>
-          <div className='flex justify-start'>
+
+        {/* BOTONES */}
+        <div className="flex justify-between">
+          <div>
             {paso > 1 && paso < 4 && (
               <Button variant="atras" onClick={manejarAtras}>
                 Atrás
               </Button>
             )}
           </div>
+
           <div>
             {paso < 4 && (
               <Button onClick={manejarSiguiente} variant="primary">
-                {paso === 3 ? '¡Apartar mi fecha ya!' : 'Siguiente'}
+                {paso === 3 ? "Confirmar" : "Siguiente"}
               </Button>
             )}
           </div>
         </div>
+
+        {loading && (
+          <div className="mt-4 text-center text-sm text-gray-500">
+            Procesando reserva...
+          </div>
+        )}
       </div>
     </div>
   );
