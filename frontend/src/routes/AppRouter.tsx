@@ -7,9 +7,8 @@ import { GestionPaquetes } from "../features/paquetes";
 import { GestionReservas } from "../features/reservas";
 import { ProtectedRoute } from "../features/auth/components/ProtectedRoute";
 import { LoginPage } from "../features/auth/components/LoginPage";
-
-// 1. NUEVO IMPORT: Traemos la vista de configuración
 import { GestionConfiguracion } from "../features/auth/components/GestionConfiguracion";
+import { LandingPage } from "../pages/LandingPage";
 
 export const AppRouter = () => {
     return (
@@ -17,9 +16,10 @@ export const AppRouter = () => {
             <Routes>
                 {/* 1. RUTA PÚBLICA */}
                 <Route path="/reserva" element={<FormularioReserva />} />
+                <Route path="/landing" element={<LandingPage />} />
                 
                 {/* Redirección opcional: si entran a la raíz "/", los manda a reservar */}
-                <Route path="/" element={<Navigate to="/reserva" replace />} />
+                <Route path="/" element={<Navigate to="/landing" replace />} />
 
                 {/* 2. RUTA DE ACCESO (Debe estar fuera de la protección) */}
                 <Route path="/admin/login" element={<LoginPage />} />
