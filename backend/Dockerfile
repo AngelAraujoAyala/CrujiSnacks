@@ -1,6 +1,5 @@
 # === PASO 1: Dependencias y Compilación ===
-FROM node:20-alpine AS builder
-
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 # Copiar archivos de dependencias
@@ -19,8 +18,7 @@ RUN npm run build
 RUN npm prune --production
 
 # === PASO 2: Entorno de Ejecución Ligero ===
-FROM node:20-alpine AS runner
-
+FROM node:22-alpine AS runner
 WORKDIR /app
 
 # Copiar solo lo estrictamente necesario desde el paso anterior
