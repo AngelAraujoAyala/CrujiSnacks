@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Admin" ADD COLUMN     "whatsappNumber" TEXT NOT NULL DEFAULT '526624509876';

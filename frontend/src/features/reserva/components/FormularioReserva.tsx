@@ -54,6 +54,20 @@ export const FormularioReserva = () => {
 
   const [errores, setErrores] = useState<ErroresReserva>({});
 
+  const [numeroTelefono, setNumeroTelefono] = useState("526624509876"); // Fallback inicial por si acaso
+
+useEffect(() => {
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+  fetch(`${API_URL}/auth/public-config`)
+    .then(res => res.json())
+    .then(data => {
+      if (data && data.whatsappNumber) {
+        setNumeroTelefono(data.whatsappNumber);
+      }
+    })
+    .catch(err => console.error("Error obteniendo teléfono de notificaciones", err));
+}, []);
+
   // CARGAR DATA
   useEffect(() => {
     const fetchData = async () => {
@@ -91,43 +105,42 @@ export const FormularioReserva = () => {
   const handleFinalConfirm = async () => {
     try {
       setLoading(true);
-
+  
       await crearReservacion(datos);
-
+  
       alert("¡Reserva guardada correctamente!");
-
+  
       const selectedPackage = packages.find((p) => p.id === datos.packageId);
-
+  
       const selectedToppings = toppings.filter((t) =>
         datos.toppingsIds.includes(t.id),
       );
-
+  
       const mensaje = `*NUEVA RESERVA* 📋%0A
-*Cliente:* ${datos.nombreCliente}%0A
-*WhatsApp:* ${datos.telefono}%0A
-*Email:* ${datos.emailCliente}%0A
-*Inicio:* ${datos.fechaInicio}%0A
-*Fin:* ${datos.fechaFin}%0A
-*Ubicación:* ${datos.lugar}%0A
-*Paquete:* ${selectedPackage?.nombre ?? "Sin paquete"}%0A
-*Toppings:* ${selectedToppings.map((t) => t.nombre).join(", ")}%0A
---------------------------%0A
-_Enviado desde el formulario web_`;
-
-      const numeroTelefono = "526624509876";
-
+  *Cliente:* ${datos.nombreCliente}%0A
+  *WhatsApp:* ${datos.telefono}%0A
+  *Email:* ${datos.emailCliente}%0A
+  *Inicio:* ${datos.fechaInicio}%0A
+  *Fin:* ${datos.fechaFin}%0A
+  *Ubicación:* ${datos.lugar}%0A
+  *Paquete:* ${selectedPackage?.nombre ?? "Sin paquete"}%0A
+  *Toppings:* ${selectedToppings.map((t) => t.nombre).join(", ")}%0A
+  --------------------------%0A
+  _Enviado desde el formulario web_`;
+  
+      // AHORA ES DINÁMICO: Lee el valor recuperado del backend de forma transparente
       localStorage.removeItem("progreso_crujisnacks");
-
+  
       window.open(`https://wa.me/${numeroTelefono}?text=${mensaje}`, "_blank");
     } catch (error) {
       console.error(error);
-
       alert("Hubo un problema al guardar tu reserva");
     } finally {
       setLoading(false);
     }
   };
 
+  
   // VALIDACIONES
   const validarPasoActual = () => {
     const nuevosErrores: ErroresReserva = {};

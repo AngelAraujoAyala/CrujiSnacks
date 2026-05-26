@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 
 import { AppRouter } from './routes/AppRouter'
+import { AuthProvider } from './features/auth/context/AuthContext' // <-- Importamos el proveedor
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <AppRouter />
+    <AuthProvider>
+      <AppRouter />
+    </AuthProvider>
   </React.StrictMode>,
 )
 
