@@ -20,7 +20,9 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors(); // <-- Para que React pueda comunicarse con el Backend
+  app.enableCors({
+    origin: 'https://crujisnackspage.onrender.com',
+  });
 
   await app.listen(process.env.PORT ?? 3000);
 }
