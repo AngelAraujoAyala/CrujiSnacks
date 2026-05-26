@@ -19,7 +19,7 @@ export const PaquetesCard = ({ pack, onEdit, onDelete }: Props) => {
   return (
     <>
       {/* TARJETA PRINCIPAL DEL PAQUETE */}
-      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-slate-200 transition-all duration-300 p-5 flex flex-col justify-between group min-h-[200px]">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:border-slate-200 transition-all duration-300 p-5 flex flex-col justify-between group min-h-50">
         <div>
           {/* ENCABEZADO: TÍTULO Y BADGE DE ESTADO */}
           <div className="flex justify-between items-start gap-4">
@@ -43,7 +43,7 @@ export const PaquetesCard = ({ pack, onEdit, onDelete }: Props) => {
               }`}
             >
               <svg
-                className="w-3.5 h-3.5 stroke-[3]"
+                className="w-3.5 h-3.5 stroke-3"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
