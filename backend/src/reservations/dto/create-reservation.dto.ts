@@ -1,27 +1,40 @@
-import { IsString, IsEmail, IsNotEmpty, IsArray } from 'class-validator';
+import {
+  IsString,
+  IsDateString,
+  IsOptional,
+  IsEnum,
+  IsArray,
+  IsNumber,
+} from 'class-validator';
+
+import { ReservaEstado } from '@prisma/client';
 
 export class CreateReservationDto {
-    @IsString() @IsNotEmpty()
-    nombreCliente: string;
+  @IsString()
+  nombreCliente: string;
 
-    @IsString() @IsNotEmpty()
-    whatsapp: string;
+  @IsString()
+  emailCliente: string;
 
-    @IsString() @IsEmail()
-    email: string;
+  @IsString()
+  telefono: string;
 
-    @IsString() @IsNotEmpty()
-    fecha: string;
+  @IsDateString()
+  fechaInicio: string;
 
-    @IsString() @IsNotEmpty()
-    hora: string;
+  @IsDateString()
+  fechaFin: string;
 
-    @IsString() @IsNotEmpty()
-    ubicacion: string;
+  @IsString()
+  lugar: string;
 
-    @IsString() @IsNotEmpty()
-    paquete: string;
+  @IsNumber()
+  packageId: number;
 
-    @IsArray()
-    toppings: string[];
+  @IsOptional()
+  @IsEnum(ReservaEstado)
+  estado?: ReservaEstado;
+
+  @IsArray()
+  toppingsIds: number[];
 }

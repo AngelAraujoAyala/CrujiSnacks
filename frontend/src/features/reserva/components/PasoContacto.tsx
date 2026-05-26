@@ -1,56 +1,121 @@
 import type { PasosReservaProps } from "../../../interfaces/pasosReservaProps";
 
 const PasoContacto = ({ datos, setDatos, errores }: PasosReservaProps) => {
-
-
   return (
-    <div className="space-y-4 animate-fadeIn">
+    <div className="space-y-5 animate-fadeIn">
+      {/* NOMBRE */}
       <div>
-        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">¿A nombre de quién?</label>
+        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">
+          ¿A nombre de quién?
+        </label>
+
         <input
           type="text"
-          placeholder="Nombre..."
-          className={`w-full px-4 py-3 rounded-xl border outline-none transition-all ${errores.nombreCliente ? 'border-red-500' : 'border-gray-300'}`}
+          placeholder="Nombre completo"
+          className={`
+            w-full px-4 py-3 rounded-xl border outline-none transition-all
+
+            ${errores.nombreCliente ? "border-red-500" : "border-gray-300"}
+          `}
           value={datos.nombreCliente}
-          onChange={(e) => setDatos({ ...datos, nombreCliente: e.target.value })}
+          onChange={(e) =>
+            setDatos({
+              ...datos,
+              nombreCliente: e.target.value,
+            })
+          }
         />
+
+        {errores.nombreCliente && (
+          <p className="text-red-500 text-xs mt-1">{errores.nombreCliente}</p>
+        )}
       </div>
 
+      {/* TELÉFONO */}
       <div>
-        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">WhatsApp</label>
+        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">
+          WhatsApp
+        </label>
+
         <input
           type="tel"
           placeholder="662 000 0000"
-          className={`w-full px-4 py-3 rounded-xl border outline-none transition-all ${errores.whatsapp ? 'border-red-500' : 'border-gray-300'}`}
-          value={datos.whatsapp}
-          onChange={(e) => setDatos({ ...datos, whatsapp: e.target.value })}
+          className={`
+            w-full px-4 py-3 rounded-xl border outline-none transition-all
+
+            ${errores.telefono ? "border-red-500" : "border-gray-300"}
+          `}
+          value={datos.telefono}
+          onChange={(e) =>
+            setDatos({
+              ...datos,
+              telefono: e.target.value,
+            })
+          }
         />
+
+        {errores.telefono && (
+          <p className="text-red-500 text-xs mt-1">{errores.telefono}</p>
+        )}
       </div>
 
+      {/* UBICACIÓN */}
       <div>
-        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">Ubicación del evento</label>
+        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">
+          Ubicación del evento
+        </label>
+
         <input
           type="text"
-          placeholder="Calle y número o salón de eventos"
-          className={`w-full px-4 py-3 rounded-xl border outline-none transition-all ${errores.ubicacion ? 'border-red-500' : 'border-gray-300'}`}
-          value={datos.ubicacion}
-          onChange={(e) => setDatos({ ...datos, ubicacion: e.target.value })}
+          placeholder="Calle, salón o ubicación del evento"
+          className={`
+            w-full px-4 py-3 rounded-xl border outline-none transition-all
+
+            ${errores.lugar ? "border-red-500" : "border-gray-300"}
+          `}
+          value={datos.lugar}
+          onChange={(e) =>
+            setDatos({
+              ...datos,
+              lugar: e.target.value,
+            })
+          }
         />
+
+        {errores.lugar && (
+          <p className="text-red-500 text-xs mt-1">{errores.lugar}</p>
+        )}
       </div>
 
+      {/* EMAIL */}
       <div>
-        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">Email</label>
+        <label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm font-semibold text-gray-700 mb-1">
+          Correo electrónico
+        </label>
+
         <input
-          type="text"
-          placeholder="tu_email@gmail.com"
-          className={`w-full px-4 py-3 rounded-xl border outline-none transition-all ${errores.email ? 'border-red-500' : 'border-gray-300'}`}
-          value={datos.email}
-          onChange={(e) => setDatos({ ...datos, email: e.target.value })}
+          type="email"
+          placeholder="correo@gmail.com"
+          className={`
+            w-full px-4 py-3 rounded-xl border outline-none transition-all
+
+            ${errores.emailCliente ? "border-red-500" : "border-gray-300"}
+          `}
+          value={datos.emailCliente}
+          onChange={(e) =>
+            setDatos({
+              ...datos,
+              emailCliente: e.target.value,
+            })
+          }
         />
+
+        {errores.emailCliente && (
+          <p className="text-red-500 text-xs mt-1">{errores.emailCliente}</p>
+        )}
       </div>
     </div>
   );
 };
-
 
 export default PasoContacto;

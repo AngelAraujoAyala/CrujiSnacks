@@ -10,24 +10,25 @@ datasource db {
 }
 
 model Reservation {
-  id             Int      @id @default(autoincrement())
-  nombreCliente  String
-  whatsapp       String
-  email          String
-  fecha          String
-  hora           String
-  ubicacion      String
-  paquete        String
-  toppings       String[]
-  createdAt      DateTime @default(now())
-}
+  id Int @id @default(autoincrement())
 
-model Package {
-  id          Int      @id @default(autoincrement())
-  nombre      String   // Ej: "Paquete Cumpleañero"
-  descripcion String?
-  precio      Decimal
-  activo      Boolean  @default(true)
+  nombreCliente String
+  emailCliente  String
+  telefono      String
+
+  fechaInicio DateTime
+  fechaFin    DateTime
+
+  lugar String
+
+  estado ReservaEstado @default(PENDIENTE)
+
+  packageId Int?
+  package   Package? @relation(fields: [packageId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  toppings ReservaTopping[]
 }
 
 model Topping {
@@ -35,4 +36,54 @@ model Topping {
   nombre String  // Ej: "Chamoy", "Tajín"
   iconURL String?
   stock  Boolean @default(true) // Para marcar si se agotó
+  reservas ReservaTopping[]
 }
+
+model ReservaTopping {
+  id         Int @id @default(autoincrement())
+
+  reservaId  Int
+  toppingId  Int
+
+  reserva    Reservation @relation(fields: [reservaId], references: [id])
+  topping    Topping @relation(fields: [toppingId], references: [id])
+}
+
+enum ReservaEstado {
+  PENDIENTE
+  CONFIRMADA
+  CANCELADA
+  COMPLETADA
+}
+
+
+model Package {
+  id          Int      @id @default(autoincrement())
+  nombre      String   // Ej: "Paquete Cumpleañero"
+  descripcion String?
+  precio      Decimal
+  activo      Boolean  @default(true)
+  reservas Reservation[]
+}
+
+model BloqueoFecha {
+  id          Int @id @default(autoincrement())
+
+  fecha       DateTime
+
+  horaInicio  String?
+  horaFin     String?
+
+  motivo      String?
+
+  activo      Boolean @default(true)
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String   // Hash con bcrypt
+  whatsappNumber String   @default("526624509876")
+  createdAt DateTime @default(now())
+}
+

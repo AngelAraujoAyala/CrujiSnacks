@@ -1,3 +1,1 @@
-import { FormularioReserva } from "./components/FormularioReserva";
-
-export default FormularioReserva;
+export { FormularioReserva } from "./components/FormularioReserva";

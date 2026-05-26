@@ -1,0 +1,1 @@
+export { GestionPaquetes } from "./components/GestionPaquetes";
