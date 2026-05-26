@@ -80,7 +80,7 @@ export const GestionConfiguracion: React.FC = () => {
   // 🔄 PANTALLA DE CARGA PROFESIONAL (SPINNER INTEGRADO)
   if (loading) {
     return (
-      <div className="max-w-2xl bg-white p-12 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center min-h-[350px]">
+      <div className="max-w-2xl bg-white p-12 rounded-2xl border border-slate-100 shadow-sm flex flex-col items-center justify-center min-h-87.5">
         <svg
           className="animate-spin h-8 w-8 text-orange-500 mb-3"
           fill="none"

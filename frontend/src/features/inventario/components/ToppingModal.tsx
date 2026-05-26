@@ -139,7 +139,7 @@ export const ToppingModal = ({
             <div
               onClick={triggerFileSelect}
               className={`
-                border-2 border-dashed rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all min-h-[140px] relative overflow-hidden
+                border-2 border-dashed rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer transition-all min-h-35 relative overflow-hidden
                 ${topping.iconURL ? "border-slate-200 bg-slate-50" : "border-slate-300 bg-slate-50/50 hover:bg-slate-50 hover:border-orange-400"}
                 ${uploading ? "opacity-60 pointer-events-none" : ""}
               `}

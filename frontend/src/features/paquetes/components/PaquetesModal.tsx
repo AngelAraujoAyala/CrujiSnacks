@@ -74,7 +74,7 @@ export const PaquetesModal = ({
                 })
               }
               placeholder="¿Qué incluye este paquete? Detalla los snacks, porciones o toppings incluidos..."
-              className="w-full border border-slate-200 rounded-xl p-3 text-sm font-medium text-slate-800 bg-slate-50/50 outline-none transition-all focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 focus:bg-white placeholder:text-slate-400 min-h-[100px] resize-none"
+              className="w-full border border-slate-200 rounded-xl p-3 text-sm font-medium text-slate-800 bg-slate-50/50 outline-none transition-all focus:border-orange-500 focus:ring-2 focus:ring-orange-500/10 focus:bg-white placeholder:text-slate-400 min-h-25 resize-none"
             />
           </div>
 
