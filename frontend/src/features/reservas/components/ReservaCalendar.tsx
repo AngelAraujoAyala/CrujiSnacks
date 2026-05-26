@@ -107,9 +107,9 @@ export const ReservaCalendar = ({
           const estado = resource.data.estado;
           let backgroundColor = "#facc15";
 
-          if (estado === "CONFIRMADA") backgroundColor = "#22c55e";
+          if (estado === "CONFIRMADA") backgroundColor = "#3b82f6";
           if (estado === "CANCELADA") backgroundColor = "#ef4444";
-          if (estado === "COMPLETADA") backgroundColor = "#3b82f6";
+          if (estado === "COMPLETADA") backgroundColor = "#22c55e";
 
           return {
             style: {

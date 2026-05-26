@@ -1,4 +1,4 @@
-export interface Package {
+export interface Paquete {
   id: string;
   nombre: string;
   descripcion?: string;
