@@ -25,10 +25,6 @@ const PasoContacto = ({ datos, setDatos, errores }: PasosReservaProps) => {
             })
           }
         />
-
-        {errores.nombreCliente && (
-          <p className="text-red-500 text-xs mt-1">{errores.nombreCliente}</p>
-        )}
       </div>
 
       {/* TELÉFONO */}
@@ -53,10 +49,6 @@ const PasoContacto = ({ datos, setDatos, errores }: PasosReservaProps) => {
             })
           }
         />
-
-        {errores.telefono && (
-          <p className="text-red-500 text-xs mt-1">{errores.telefono}</p>
-        )}
       </div>
 
       {/* UBICACIÓN */}
@@ -81,10 +73,6 @@ const PasoContacto = ({ datos, setDatos, errores }: PasosReservaProps) => {
             })
           }
         />
-
-        {errores.lugar && (
-          <p className="text-red-500 text-xs mt-1">{errores.lugar}</p>
-        )}
       </div>
 
       {/* EMAIL */}
@@ -109,10 +97,6 @@ const PasoContacto = ({ datos, setDatos, errores }: PasosReservaProps) => {
             })
           }
         />
-
-        {errores.emailCliente && (
-          <p className="text-red-500 text-xs mt-1">{errores.emailCliente}</p>
-        )}
       </div>
     </div>
   );

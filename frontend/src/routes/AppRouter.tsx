@@ -14,17 +14,13 @@ export const AppRouter = () => {
     return (
         <BrowserRouter>
             <Routes>
-                {/* 1. RUTA PÚBLICA */}
                 <Route path="/reserva" element={<FormularioReserva />} />
                 <Route path="/landing" element={<LandingPage />} />
                 
-                {/* Redirección opcional: si entran a la raíz "/", los manda a reservar */}
                 <Route path="/" element={<Navigate to="/landing" replace />} />
 
-                {/* 2. RUTA DE ACCESO (Debe estar fuera de la protección) */}
                 <Route path="/admin/login" element={<LoginPage />} />
 
-                {/* 3. PANEL ADMINISTRATIVO PROTEGIDO */}
                 <Route 
                     path="/admin" 
                     element={
@@ -33,7 +29,6 @@ export const AppRouter = () => {
                         </ProtectedRoute>
                     }
                 >
-                    {/* Rutas hijas heredan la protección automáticamente */}
                     <Route
                         path="toppings"
                         element={<GestionToppings />}
@@ -49,14 +44,12 @@ export const AppRouter = () => {
                         element={<GestionReservas />}
                     />
 
-                    {/* 2. NUEVA RUTA HIJA: Resuelve la URL como /admin/configuracion */}
                     <Route
                         path="configuracion"
                         element={<GestionConfiguracion />}
                     />
                 </Route>
 
-                {/* Comodín para manejar páginas 404 o rutas inexistentes */}
                 <Route path="*" element={<Navigate to="/reserva" replace />} />
             </Routes>
         </BrowserRouter>
