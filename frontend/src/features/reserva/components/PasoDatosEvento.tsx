@@ -86,9 +86,6 @@ const PasoDatosEvento = ({ datos, setDatos, errores }: PasosReservaProps) => {
               onChange={(e) => manejarCambioFecha(e.target.value)}
             />
           </div>
-          {errores.fechaInicio && (
-            <p className="text-red-500 text-xs mt-1 font-medium">{errores.fechaInicio}</p>
-          )}
         </div>
 
         {/* 2. SELECCIÓN DE LAS HORAS */}
@@ -141,9 +138,6 @@ const PasoDatosEvento = ({ datos, setDatos, errores }: PasosReservaProps) => {
             </div>
           </div>
         </div>
-        {errores.fechaFin && (
-          <p className="text-red-500 text-xs mt-0.5 font-medium">{errores.fechaFin}</p>
-        )}
       </div>
 
       {/* SECCIÓN DE SELECCIÓN DE PAQUETES */}
@@ -198,9 +192,6 @@ const PasoDatosEvento = ({ datos, setDatos, errores }: PasosReservaProps) => {
               </button>
             ))}
           </div>
-        )}
-        {errores.packageId && (
-          <p className="text-red-500 text-xs mt-2 font-medium pl-1">{errores.packageId}</p>
         )}
       </div>
     </div>

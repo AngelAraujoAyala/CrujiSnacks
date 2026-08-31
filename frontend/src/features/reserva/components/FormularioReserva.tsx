@@ -317,7 +317,7 @@ _Enviado desde el formulario web_`;
 
     if (nuevosToppings.length === 10) {
       setErrores((prevErrors) => {
-        const { toppingsIds, ...rest } = prevErrors;
+        const { ...rest } = prevErrors;
         return rest;
       });
     }
@@ -325,7 +325,6 @@ _Enviado desde el formulario web_`;
 
   return (
     <div className="max-w-md mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-orange-100">
-      {/* HEADER */}
       <div className="bg-orange-500 p-6 text-white text-center">
         <h2 className="text-2xl font-bold uppercase tracking-wider">
           CrujiSnacks
@@ -340,7 +339,6 @@ _Enviado desde el formulario web_`;
       {/* CONTENT */}
       <div className="p-8">
         {enviado ? (
-          /* 🌟 PANTALLA DE ÉXITO RESPONSIVA Y AGIL */
           <div className="text-center py-6 space-y-6 animate-fadeIn">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 text-green-600 shadow-inner">
               <svg
@@ -386,9 +384,7 @@ _Enviado desde el formulario web_`;
             </div>
           </div>
         ) : (
-          /* 📋 FLUJO INTERACTIVO POR PASOS DEL FORMULARIO */
           <>
-            {/* PROGRESS BAR */}
             <div className="flex justify-between mb-8">
               {[1, 2, 3, 4].map((num) => (
                 <div
@@ -400,7 +396,6 @@ _Enviado desde el formulario web_`;
               ))}
             </div>
 
-            {/* INTERRUPTOR DE PASOS */}
             {paso === 1 && (
               <PasoContacto
                 datos={datos}
@@ -432,7 +427,6 @@ _Enviado desde el formulario web_`;
               />
             )}
 
-            {/* CONTENEDOR DE COMPONENTES DE ALERTA PROPIOS */}
             <div className="my-4">
               {Object.values(errores).map(
                 (error, index) =>
@@ -440,7 +434,6 @@ _Enviado desde el formulario web_`;
               )}
             </div>
 
-            {/* BOTONES DE CONTROL DE FLUJO */}
             <div className="flex justify-between items-center mt-6">
               <div>
                 {paso > 1 && paso < 4 && (
